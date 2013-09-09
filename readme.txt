@@ -12,7 +12,7 @@ Create an Encyclopedia on Wordpress
 
 == Description ==
 
-Questions, Feedback and Features Requests http://www.benjamin-neske.de/forums/forum/encyclopedia-plugin/
+Questions, Feedback and Features Requests http://nessio.de/lexikon/
 
 == Installation ==
 
@@ -26,12 +26,14 @@ This section describes how to install the plugin and get it working.
 
 == Frequently Asked Questions ==
 
+= Test =
+Test
 
 == Screenshots ==
 
 1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
 the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets 
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png` 
+directory take precedence. For example, `/assets/asset1.png` would win over `/tags/4.3/screenshot-1.png` 
 (or jpg, jpeg, gif).
 2. This is the second screen shot
 
@@ -39,3 +41,6 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 = 1.0 =
 First Version of the Wordpress Plugin.
+
+== Upgrade Notice ==
+
