@@ -27,7 +27,7 @@ This section describes how to install the plugin and get it working.
 == Frequently Asked Questions ==
 
 = Test =
-Test
+coming soon
 
 == Screenshots ==
 
@@ -43,4 +43,4 @@ directory take precedence. For example, `/assets/asset1.png` would win over `/ta
 First Version of the Wordpress Plugin.
 
 == Upgrade Notice ==
-
+coming soon
