@@ -11,6 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Create an Encyclopedia on Wordpress
 
 == Description ==
+Create an Encyclopedia on Wordpress
 
 Questions, Feedback and Features Requests http://nessio.de/lexikon/
 
@@ -31,9 +32,9 @@ coming soon
 
 == Screenshots ==
 
-1. test
-2. mhh
-3. test
+1. overview - all entries
+2. add a new entr
+3. the frontend view
 
 == Changelog ==
 
