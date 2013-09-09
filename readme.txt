@@ -1,6 +1,5 @@
 === Plugin Name ===
 Contributors: nessio
-Donate link: http://nessio.de
 Tags: encyclopedia, dictionary, lexicon
 Requires at least: 3.0.1
 Tested up to: 3.4
