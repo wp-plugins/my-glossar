@@ -5,7 +5,7 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 0.9.1
+   Version: 0.9.2
 */
 
 class MyGlossar {
@@ -129,8 +129,7 @@ class MyGlossar {
 		endwhile;
         endif;	
 		$html .='</div>';
-		$html .= '<span style="border-top:1px solid #EBEBEB; color:#d3d3d3;">Technikträum durch einen <a href="http://www.kredite-privat.org" alt="Privat Kredit" style="color:#d3d3d3;">Privat Kredit</a> finanzieren.</span>';
-		
+	
   
         return $html;
 });
@@ -139,23 +138,23 @@ class MyGlossar {
 		$html = '';
 		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC'  );
 		$loop = new WP_Query( $args );
-		$i = 64;
-		$a = array();
+		$array = array();
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
 			$str = get_the_title();
-			$a[] = substr($str, 0, 1);
+			$array[] = substr($str, 0, 1);
 		endwhile;
 		endif;
 		
-		$bs = array_unique($a);		
-		$i = 65;
-		foreach ($bs as $value) {		
-		while (chr($i) != strtoupper($value)) {
-		$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline; color:#d3d3d3;">'.chr($i).'</span>';
-					$i++;}		
-		$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#'.chr($i).'">'.chr($i).'</a></span>';
-		$i++;
-		}		
+		$clean_array = array_unique($array);
+		for($i = 65; $i < 91; $i++) {	
+			if(in_array(chr($i), $clean_array)) {
+				$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#'.chr($i).'">'.chr($i).'</a></span>';				
+				
+			} else {
+				$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline; color:#d3d3d3;">'.chr($i).'</span>';
+			}		
+		}
+		
 		$html .='<div style="clear:left;"></div>';
 		return $html;
 

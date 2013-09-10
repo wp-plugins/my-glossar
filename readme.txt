@@ -7,10 +7,10 @@ Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create an Encyclopedia on Wordpress
+This Plugins helps you to create a simple Glossar / Encyclopedia on your site using the plugin by Nessio
 
 == Description ==
-Create an Encyclopedia on Wordpress
+
 
 Questions, Feedback and Features Requests http://nessio.de/lexikon/
 
@@ -26,8 +26,12 @@ This section describes how to install the plugin and get it working.
 
 == Frequently Asked Questions ==
 
-= Test =
-coming soon
+= Can i try the the Plugin ? =
+Yes you can try it on our example blog.
+http://nessio.net/demo/
+
+Backeend: http://nessio.net/demo/wp-admin
+User: demo / Password: demo
 
 == Screenshots ==
 
@@ -37,8 +41,13 @@ coming soon
 
 == Changelog ==
 
-= 1.0 =
-First Version of the Wordpress Plugin.
+= 0.9.1 =
+First version of the glosslar plugin.
+
+= 0.9.2 =
+- Bugfix for the navigation shortcode
+- readme adjustments
+
 
 == Upgrade Notice ==
 coming soon
