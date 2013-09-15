@@ -5,7 +5,7 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 0.9.2
+   Version: 1.0.1
 */
 
 class MyGlossar {
@@ -71,6 +71,7 @@ class MyGlossar {
 		printf( '<p><input style="%s" type="text" name="%s" id="%s" value="%s" /></p>', 'width: 99%;', '_nessio_gl_term', '_nessio_gl_term', esc_attr( get_post_meta( $post->ID, '_nessio_gl_term', true ) ) );
 				
 	}
+	
 	
 	function meta_box_save( $post_id, $post ) {
 		
@@ -141,7 +142,7 @@ class MyGlossar {
 		$array = array();
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
 			$str = get_the_title();
-			$array[] = substr($str, 0, 1);
+			$array[] = strtoupper(substr($str, 0, 1));
 		endwhile;
 		endif;
 		
