@@ -48,6 +48,9 @@ First version of the glosslar plugin.
 - Bugfix for the navigation shortcode
 - readme adjustments
 
+= 0.9.3 =
+- Bugfix Navigationcode
+
 
 == Upgrade Notice ==
 coming soon

@@ -5,7 +5,7 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 1.0.1
+   Version: 0.9.3
 */
 
 class MyGlossar {
