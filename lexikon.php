@@ -72,7 +72,6 @@ class MyGlossar {
 				
 	}
 	
-	
 	function meta_box_save( $post_id, $post ) {
 		
 		$key = '_nessio_gl_term';
@@ -113,19 +112,19 @@ class MyGlossar {
 	
 	add_shortcode('gl_directory', function($attributes) {
 		$html = '<div>';
-			$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC'  );
+			$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1' );
 			$loop = new WP_Query( $args );
 			$i = 64;	
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
 		
 			$str = get_the_title();
 			if (chr($i) == strtoupper(substr($str, 0, 1))) {
-				$html .= '<p><a href="'.get_permalink().'">'.get_the_title().'</a></p>';
+				$html .= '<p style="float:left; width:205px;"><a href="'.get_permalink().'">'.get_the_title().'</a></p>';
 			} else {
 				while (chr($i) != strtoupper(substr($str, 0, 1))) {
 					$i++;}
-				$html .= '<h3 style="border-bottom:1px solid #EBEBEB;"><a name="'.chr($i).'"></a><span style="margin:0 0 10px 10px;">'.chr($i).'</span> </h3>';	
-				$html .= '<p><a href="'.get_permalink().'">'.get_the_title().'</a></p>';
+				$html .= '<h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><a name="'.chr($i).'"></a><span style="margin:0 0 10px 10px;">'.chr($i).'</span> </h3>';	
+				$html .= '<p style="float:left; width:205px;"><a href="'.get_permalink().'">'.get_the_title().'</a></p>';
 				}
 		endwhile;
         endif;	
@@ -137,7 +136,7 @@ class MyGlossar {
 	
 	add_shortcode('gl_navigation', function($attributes) {
 		$html = '';
-		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC'  );
+		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1'  );
 		$loop = new WP_Query( $args );
 		$array = array();
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
