@@ -11,8 +11,9 @@ This Plugins helps you to create a simple Glossar / Encyclopedia on your site us
 
 == Description ==
 
+Questions, Feedback and Features Requests you can place under http://www.benjamin-neske.de/stichwortlexikon-mit-wordpress-my-glossar-plugin/
 
-Questions, Feedback and Features Requests http://nessio.de/lexikon/
+For a demostartion go to http://nessio.net/demo/
 
 == Installation ==
 
@@ -30,7 +31,7 @@ This section describes how to install the plugin and get it working.
 Yes you can try it on our example blog.
 http://nessio.net/demo/
 
-Backeend: http://nessio.net/demo/wp-admin
+Backend: http://nessio.net/demo/wp-admin
 User: demo / Password: demo
 
 == Screenshots ==
@@ -51,6 +52,8 @@ First version of the glosslar plugin.
 = 0.9.3 =
 - Bugfix Navigationcode
 
-
+= 0.9.4 =
+- add editor for the backendview
+- some minor bugfixes
 == Upgrade Notice ==
 coming soon
