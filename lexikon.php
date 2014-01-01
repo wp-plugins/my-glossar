@@ -5,7 +5,7 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 0.9.3
+   Version: 0.9.4
 */
 
 class MyGlossar {
@@ -49,7 +49,8 @@ class MyGlossar {
 				),
 				'public' => true,
 				'query_var' => true,
-				'menu_position' => 25,
+				'show_in_menu' => true,
+				'show_ui' => true,
 				'supports' => array( 'title' ),
 				'rewrite' => array( 'slug' => 'lexikon', 'with_front' => false )
 			)
@@ -68,8 +69,9 @@ class MyGlossar {
 		printf( '<input type="hidden" name="_nessio_gl_nonce" value="%s" />', wp_create_nonce( plugin_basename(__FILE__) ) );
 		
 		printf( '<p><label for="%s">%s</label></p>', '_nessio_gl_description', __('Descprition of the Terms', 'nessio_gl') );
-		printf( '<p><input style="%s" type="text" name="%s" id="%s" value="%s" /></p>', 'width: 99%;', '_nessio_gl_term', '_nessio_gl_term', esc_attr( get_post_meta( $post->ID, '_nessio_gl_term', true ) ) );
-				
+		//Enable the Editor / TinyMCE
+		$settings = array( 'media_buttons' => true );
+		wp_editor( get_post_meta( $post->ID, '_nessio_gl_term', true ), '_nessio_gl_term', $settings );
 	}
 	
 	function meta_box_save( $post_id, $post ) {
@@ -114,10 +116,16 @@ class MyGlossar {
 		$html = '<div>';
 			$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1' );
 			$loop = new WP_Query( $args );
-			$i = 64;	
+			$i = 64;
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
 		
 			$str = get_the_title();
+			
+			//Workarround für Umlaute
+			$special_chars = array("Ü", "ü", "Ä", "ä", "Ö", "ö");
+			$replace_chars =  array("U", "u", "A", "a", "O", "o");
+			$str = str_replace($special_chars, $replace_chars, $str);
+			
 			if (chr($i) == strtoupper(substr($str, 0, 1))) {
 				$html .= '<p style="float:left; width:205px;"><a href="'.get_permalink().'">'.get_the_title().'</a></p>';
 			} else {
