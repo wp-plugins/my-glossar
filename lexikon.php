@@ -5,17 +5,15 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 0.9.4
+   Version: 0.9.5
 */
 
 class MyGlossar {
 	
 	// Constructor
 	function __construct() {
-		//register_activation_hook( __FILE__, 'flush_rewrite_rules' );
-		
 		add_action( 'init', array( &$this, 'register_post_type' ) );
-		add_action( 'manage_posts_custom_column', array( &$this, 'columns_data' ) );
+		//add_action( 'manage_posts_custom_column', array( &$this, 'columns_data' ) );
 		add_action( 'admin_menu', array( &$this, 'add_meta_box' ) );
 		add_action( 'save_post', array( &$this, 'meta_box_save' ), 1, 2 );
 
