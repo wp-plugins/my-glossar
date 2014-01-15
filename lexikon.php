@@ -1,7 +1,7 @@
 <?php
 /*
    Plugin Name: Glossar / Encyclopedia
-   Plugin URI: http://nessio.de/lexikon/
+   Plugin URI: http://www.benjamin-neske.de/stichwortlexikon-mit-wordpress-my-glossar-plugin/
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
