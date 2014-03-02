@@ -55,5 +55,13 @@ First version of the glosslar plugin.
 = 0.9.4 =
 - add editor for the backendview
 - some minor bugfixes
+
+= 0.9.5 =
+- fix the problem with the special character (germane)
+- activate support for comments
+- fix problem with the text formatting
+- fix some output bugs
+
 == Upgrade Notice ==
+
 coming soon

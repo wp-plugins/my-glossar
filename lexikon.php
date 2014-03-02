@@ -1,4 +1,5 @@
 <?php
+
 /*
    Plugin Name: Glossar / Encyclopedia
    Plugin URI: http://www.benjamin-neske.de/stichwortlexikon-mit-wordpress-my-glossar-plugin/
@@ -13,22 +14,20 @@ class MyGlossar {
 	// Constructor
 	function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
-		//add_action( 'manage_posts_custom_column', array( &$this, 'columns_data' ) );
 		add_action( 'admin_menu', array( &$this, 'add_meta_box' ) );
 		add_action( 'save_post', array( &$this, 'meta_box_save' ), 1, 2 );
 
+		// activate the support for comments and author (backend)
+		add_post_type_support( 'nessio_gl', array( 'comments', 'author' ) );
 	}		
 	
 	// PHP4 Constructor
 	function MyGlossar() {
 		$this->__construct();
-	}
-		
+	}	
 	
+	function register_post_type() {		
 
-	
-	function register_post_type() {
-		
 		register_post_type( 'nessio_gl',
 			array(
 				'labels' => array(
@@ -105,33 +104,34 @@ class MyGlossar {
 	}
 	
 	};
-	
-	
 
-	
-	
-	add_shortcode('gl_directory', function($attributes) {
+
+	add_shortcode('gl_directory', function() {
 		$html = '<div>';
-			$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1' );
+			$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1');
 			$loop = new WP_Query( $args );
 			$i = 64;
+
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
+			$title = get_the_title();
+			$permalink = get_permalink();
+
+			if($title):
+				//Workarround Germane Special Characters
+				$umlaute = array('Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü');
+				$letter = array('A', 'O', 'U', 'a', 'o', 'u');
+				$str = strtoupper(substr(str_replace($umlaute, $letter, $title), 0, 1));
+								
+				if (chr($i) == $str) {
+					$html .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
+				} else {
 		
-			$str = get_the_title();
-			
-			//Workarround für Umlaute
-			$special_chars = array("Ü", "ü", "Ä", "ä", "Ö", "ö");
-			$replace_chars =  array("U", "u", "A", "a", "O", "o");
-			$str = str_replace($special_chars, $replace_chars, $str);
-			
-			if (chr($i) == strtoupper(substr($str, 0, 1))) {
-				$html .= '<p style="float:left; width:205px;"><a href="'.get_permalink().'">'.get_the_title().'</a></p>';
-			} else {
-				while (chr($i) != strtoupper(substr($str, 0, 1))) {
-					$i++;}
-				$html .= '<h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><a name="'.chr($i).'"></a><span style="margin:0 0 10px 10px;">'.chr($i).'</span> </h3>';	
-				$html .= '<p style="float:left; width:205px;"><a href="'.get_permalink().'">'.get_the_title().'</a></p>';
-				}
+					while (chr($i) != $str) {
+						$i++;}
+					$html .= '<a name="'.chr($i).'"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.chr($i).'</span> </h3>';	
+					$html .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
+					}
+			endif;
 		endwhile;
         endif;	
 		$html .='</div>';
@@ -140,7 +140,7 @@ class MyGlossar {
         return $html;
 });
 	
-	add_shortcode('gl_navigation', function($attributes) {
+	add_shortcode('gl_navigation', function() {
 		$html = '';
 		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1'  );
 		$loop = new WP_Query( $args );
@@ -152,7 +152,7 @@ class MyGlossar {
 		endif;
 		
 		$clean_array = array_unique($array);
-		for($i = 65; $i < 91; $i++) {	
+		for($i = 65; $i < 91; $i++) {
 			if(in_array(chr($i), $clean_array)) {
 				$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#'.chr($i).'">'.chr($i).'</a></span>';				
 				
@@ -170,7 +170,9 @@ class MyGlossar {
 	function pippin_filter_content_sample($content) {
 	if( is_singular('nessio_gl') && is_main_query() ) {
 		$new_content = get_post_meta( get_the_ID(), '_nessio_gl_term' );
-		$content .= $new_content[0];	
+		if($new_content):
+			$content .= wpautop($new_content[0]);
+		endif;
 	}	
 	return $content;
 };
