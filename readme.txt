@@ -63,5 +63,4 @@ First version of the glosslar plugin.
 - fix some output bugs
 
 == Upgrade Notice ==
-
 coming soon

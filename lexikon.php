@@ -180,4 +180,5 @@ add_filter('the_content', 'pippin_filter_content_sample');
 	
 	
 $MyGlossar = new MyGlossar;
+
 ?>
