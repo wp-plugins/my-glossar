@@ -62,5 +62,9 @@ First version of the glosslar plugin.
 - fix problem with the text formatting
 - fix some output bugs
 
+= 0.9.6 =
+- fix for special character and older php versions
+
+
 == Upgrade Notice ==
 coming soon

@@ -6,10 +6,11 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 0.9.5
+   Version: 0.9.6
 */
-
+mb_internal_encoding("UTF-8");
 class MyGlossar {
+
 	
 	// Constructor
 	function __construct() {
@@ -106,41 +107,58 @@ class MyGlossar {
 	};
 
 
-	add_shortcode('gl_directory', function() {
+	
+
+	function gl_direct() {
 		$html = '<div>';
-			$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1');
-			$loop = new WP_Query( $args );
-			$i = 64;
+		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1');
+		$loop = new WP_Query( $args );
+
+		$aktueller_anfangsbuchstabe = null;
+		$aktueller_anfangsbuchstabe2 = null;
+		$nhtml = null;
 
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
 			$title = get_the_title();
-			$permalink = get_permalink();
 
 			if($title):
-				//Workarround Germane Special Characters
-				$umlaute = array('€', '…', '†', 'Š', 'š', 'Ÿ');
-				$letter = array('A', 'O', 'U', 'a', 'o', 'u');
-				$str = strtoupper(substr(str_replace($umlaute, $letter, $title), 0, 1));
-								
-				if (chr($i) == $str) {
-					$html .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
-				} else {
-		
-					while (chr($i) != $str) {
-						$i++;}
-					$html .= '<a name="'.chr($i).'"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.chr($i).'</span> </h3>';	
-					$html .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
-					}
-			endif;
+				$entry_anfangsbuchstabe = strtoupper(mb_substr($title, 0, 1));
+				$isFirstCharLetter = ctype_alpha($entry_anfangsbuchstabe);
+				$permalink = get_permalink();
+
+			if($isFirstCharLetter == True) {
+	            if (is_null($aktueller_anfangsbuchstabe) || $aktueller_anfangsbuchstabe != $entry_anfangsbuchstabe) {
+	            
+	                $html .= '<a name="'.$entry_anfangsbuchstabe.'"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.$entry_anfangsbuchstabe.'</span> </h3>';	
+	                $aktueller_anfangsbuchstabe = $entry_anfangsbuchstabe;
+	            }	            
+				$html .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
+			} else {
+				
+	            if (is_null($aktueller_anfangsbuchstabe2) || $aktueller_anfangsbuchstabe2 != $entry_anfangsbuchstabe) {
+	            
+	                $nhtml .= '<h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.$entry_anfangsbuchstabe.'</span> </h3>';	
+	                $aktueller_anfangsbuchstabe2 = $entry_anfangsbuchstabe;
+	            }
+	            
+				$nhtml .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
+				}
+
+
+
+endif;
 		endwhile;
-        endif;	
-		$html .='</div>';
+		endif;
+		$html .= $nhtml;
+		$html .= '</div>';
+		return $html;
+
+    }
+
+	add_shortcode('gl_directory', 'gl_direct'); //Workarround for older PHP-Versions - Do not use function() instead of gl_direct
 	
-  
-        return $html;
-});
 	
-	add_shortcode('gl_navigation', function() {
+	function gl_nav() {
 		$html = '';
 		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1'  );
 		$loop = new WP_Query( $args );
@@ -163,8 +181,9 @@ class MyGlossar {
 		
 		$html .='<div style="clear:left;"></div>';
 		return $html;
+	};
 
-});
+	add_shortcode('gl_navigation', 'gl_nav'); //Workarround for older PHP-Versions - Do not use function() instead of gl_nav
 	
 
 	function pippin_filter_content_sample($content) {
