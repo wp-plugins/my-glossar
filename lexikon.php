@@ -6,7 +6,7 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 0.9.6
+   Version: 1.0.0
 */
 mb_internal_encoding("UTF-8");
 class MyGlossar {
@@ -17,6 +17,9 @@ class MyGlossar {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
 		add_action( 'admin_menu', array( &$this, 'add_meta_box' ) );
 		add_action( 'save_post', array( &$this, 'meta_box_save' ), 1, 2 );
+		//Adminmenu
+		add_action('admin_init', 'register_and_build_fields');
+		add_action('admin_menu', 'theme_options_page');
 
 		// activate the support for comments and author (backend)
 		add_post_type_support( 'nessio_gl', array( 'comments', 'author' ) );
@@ -26,8 +29,10 @@ class MyGlossar {
 	function MyGlossar() {
 		$this->__construct();
 	}	
-	
-	function register_post_type() {		
+
+	function register_post_type() {	
+
+		$options = get_option('theme_options');
 
 		register_post_type( 'nessio_gl',
 			array(
@@ -50,7 +55,7 @@ class MyGlossar {
 				'show_in_menu' => true,
 				'show_ui' => true,
 				'supports' => array( 'title' ),
-				'rewrite' => array( 'slug' => 'lexikon', 'with_front' => false )
+				'rewrite' => array( 'slug' => $options['slug_setting'] ? $options['slug_setting'] : 'lexikon', 'with_front' => false )
 			)
 		);
 		
@@ -116,7 +121,7 @@ class MyGlossar {
 
 		$aktueller_anfangsbuchstabe = null;
 		$aktueller_anfangsbuchstabe2 = null;
-		$nhtml = null;
+		$nhtml = '<a name="all"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">All</span> </h3';
 
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
 			$title = get_the_title();
@@ -143,10 +148,7 @@ class MyGlossar {
 	            
 				$nhtml .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
 				}
-
-
-
-endif;
+			endif;
 		endwhile;
 		endif;
 		$html .= $nhtml;
@@ -179,6 +181,7 @@ endif;
 			}		
 		}
 		
+		$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#all">#</a></span>';
 		$html .='<div style="clear:left;"></div>';
 		return $html;
 	};
@@ -200,4 +203,44 @@ add_filter('the_content', 'pippin_filter_content_sample');
 	
 $MyGlossar = new MyGlossar;
 
+// Adminmenu
+
+function build_options_page() { ?>
+	<div id="theme-options-wrap">
+		<div class="icon32" id="icon-tools"> <br /> </div>
+		<h2>My Gloassar Settings</h2>
+
+			<form method="post" action="options.php" enctype="multipart/form-data">
+			<?php settings_fields('theme_options'); ?>
+			<?php do_settings_sections(__FILE__); ?>
+			<p class="submit">
+			<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
+			</p>
+		</form>
+		<p>After editing the Slug the Permalinks Settings must be saved again.</p>
+	</div>
+<?php }
+
+function register_and_build_fields() {
+	register_setting('theme_options', 'theme_options', 'validate_setting');
+	add_settings_section('general_settings', 'General Settings', 'settings_general', __FILE__);
+
+	function settings_general() {}
+
+	add_settings_field('slug', 'Url-Slug', 'slug_setting', __FILE__, 'general_settings');
+}
+
+function validate_setting($theme_options) {
+	return $theme_options;
+}
+
+function slug_setting() {
+	$options = get_option('theme_options'); echo "<input name='theme_options[slug_setting]' type='text' value='{$options['slug_setting']}' />";
+}
+
+
+
+
+
+function theme_options_page() { add_options_page('My Glossar Settings', 'My Glossar Settings', 'administrator', __FILE__, 'build_options_page');}
 ?>
