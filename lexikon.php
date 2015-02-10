@@ -121,7 +121,7 @@ class MyGlossar {
 
 		$aktueller_anfangsbuchstabe = null;
 		$aktueller_anfangsbuchstabe2 = null;
-		$nhtml = '<a name="all"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">All</span> </h3';
+		$nhtml = '<a name="all"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">All</span> </h3>';
 
 		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
 			$title = get_the_title();
