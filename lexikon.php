@@ -186,7 +186,7 @@ function gl_nav() {
 		}
 	}
 
-	if(is_numeric($clean_array[0]) OR $clean_array[0] != chr(65)) {
+	if(is_numeric($clean_array[0])) {
 		$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#all">#</a></span>';
 	}
 	$html .='<div style="clear:left;"></div>';
