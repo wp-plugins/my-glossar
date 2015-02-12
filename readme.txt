@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: nessio
-Tags: encyclopedia, dictionary, lexicon
+Tags: dictionary, encyclopedia, lexicon, lexikon, page lexicon, seo lexicon, seo lexikon, glossar
 Requires at least: 3.0.1
 Tested up to: 4.1
 Stable tag: 4.3
@@ -11,28 +11,43 @@ This Plugins helps you to create a simple Glossar / Encyclopedia on your site us
 
 == Description ==
 
-Questions, Feedback and Features Requests you can place under http://www.benjamin-neske.de/stichwortlexikon-mit-wordpress-my-glossar-plugin/
 
-For a demostartion go to http://nessio.net/demo/
+If you have questions, feedback or an idea for a feature request you can place it [on my Website](http://www.benjamin-neske.de/stichwortlexikon-mit-wordpress-my-glossar-plugin/).
+
+You can check the live example at http://www.handyvertrag-tipps.de/lexikon/ or a demo at http://nessio.net/demo/ .
+For the Backend you can login with the following credentials:
+User: demo
+Password: demo
 
 == Installation ==
 
 This section describes how to install the plugin and get it working.
 
-1. Upload 'glossar\lexikon.php' to the '/wp-content/plugins/' directory
+1. Upload 'my-glossar' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to Settings > Permalinks and save the structure again
-4. Create a new Page with the Permalink /lexikon/ and add the Shortcodes [gl_navigation] for the navigation and [gl_directory] for the entries to the page.
+3. Optional: Set-up the Slug for the lexicon under Settings > Glossar. The default value is 'lexikon'
+4. It is important that you SAVE the Permalink structure again. (Settings > Permalinks)
+5. Create a new Page with the your own or the default Slug /lexikon/ and add the Shortcodes [gl_navigation] for the navigation and [gl_directory] for the entries to the page
+6. Enjoy the Plugin :-)
 
 
 == Frequently Asked Questions ==
 
-= Can i try the the Plugin ? =
-Yes you can try it on our example blog.
-http://nessio.net/demo/
 
-Backend: http://nessio.net/demo/wp-admin
-User: demo / Password: demo
+= How can i try the plugin? =
+You can check the demo of the plugin at http://nessio.net/demo/ .
+For the Backend you can login with the following credentials:
+
+User: demo
+Password: demo
+
+= Clicking on a word shows a 404 Error =
+The most reasons for this error is a not saved permalink structure.
+Go to Settings > Permalinks and press the save button to solve this issue.
+
+= How can i use my own template for the detail view ? =
+To use an own template you can create a new file with the name single-nessio_gl.php and upload this to the theme folder.
+
 
 == Screenshots ==
 
@@ -68,6 +83,10 @@ First version of the glosslar plugin.
 = 1.0.0 =
 - added the possibility to use your own url-slug instead of lexikon
 - minor bugfixes
+
+= 1.0.2 =
+- fixed the not closed h3-tag
+- Optimization of displaying the numeric character
 
 
 == Upgrade Notice ==

@@ -6,12 +6,12 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 1.0.0
+   Version: 1.0.2
 */
 mb_internal_encoding("UTF-8");
 class MyGlossar {
 
-	
+
 	// Constructor
 	function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
@@ -23,14 +23,16 @@ class MyGlossar {
 
 		// activate the support for comments and author (backend)
 		add_post_type_support( 'nessio_gl', array( 'comments', 'author' ) );
-	}		
-	
+	}
+
+
+
 	// PHP4 Constructor
 	function MyGlossar() {
 		$this->__construct();
-	}	
+	}
 
-	function register_post_type() {	
+	function register_post_type() {
 
 		$options = get_option('theme_options');
 
@@ -58,33 +60,33 @@ class MyGlossar {
 				'rewrite' => array( 'slug' => $options['slug_setting'] ? $options['slug_setting'] : 'lexikon', 'with_front' => false )
 			)
 		);
-		
+
 	}
-	
-		
+
+
 	function add_meta_box() {
 		add_meta_box('nessio_gl', __('Description', 'nessio_gl'), array( &$this, 'meta_box' ), 'nessio_gl', 'normal', 'high');
 	}
-	
+
 	function meta_box() {
 		global $post;
-		
+
 		printf( '<input type="hidden" name="_nessio_gl_nonce" value="%s" />', wp_create_nonce( plugin_basename(__FILE__) ) );
-		
+
 		printf( '<p><label for="%s">%s</label></p>', '_nessio_gl_description', __('Descprition of the Terms', 'nessio_gl') );
 		//Enable the Editor / TinyMCE
 		$settings = array( 'media_buttons' => true );
 		wp_editor( get_post_meta( $post->ID, '_nessio_gl_term', true ), '_nessio_gl_term', $settings );
 	}
-	
+
 	function meta_box_save( $post_id, $post ) {
-		
+
 		$key = '_nessio_gl_term';
-		
+
 		//	verify the nonce
 		if ( !isset($_POST['_nessio_gl_nonce']) || !wp_verify_nonce( $_POST['_nessio_gl_nonce'], plugin_basename(__FILE__) ) )
 			return;
-			
+
 		//	don't try to save the data under autosave, ajax, or future post.
 		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) return;
 		if ( defined('DOING_AJAX') && DOING_AJAX ) return;
@@ -93,12 +95,12 @@ class MyGlossar {
 		//	is the user allowed to edit the URL?
 		if ( ! current_user_can( 'edit_posts' ) || $post->post_type != 'nessio_gl' )
 			return;
-			
+
 		$value = isset( $_POST[$key] ) ? $_POST[$key] : '';
-		
+
 		if ( $value ) {
 			//	save/update
-						  $my_post = array();
+			$my_post = array();
 			update_post_meta($post->ID, $key, $value);
 
 
@@ -106,101 +108,106 @@ class MyGlossar {
 			//	delete if blank
 			delete_post_meta($post->ID, $key);
 		}
-		
+
 	}
-	
-	};
+
+};
 
 
-	
 
-	function gl_direct() {
-		$html = '<div>';
-		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1');
-		$loop = new WP_Query( $args );
 
-		$aktueller_anfangsbuchstabe = null;
-		$aktueller_anfangsbuchstabe2 = null;
-		$nhtml = '<a name="all"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">All</span> </h3>';
+function gl_direct() {
+	$html = '<div>';
+	$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1');
+	$loop = new WP_Query( $args );
 
-		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
-			$title = get_the_title();
+	$aktueller_anfangsbuchstabe = null;
+	$aktueller_anfangsbuchstabe2 = null;
 
-			if($title):
-				$entry_anfangsbuchstabe = strtoupper(mb_substr($title, 0, 1));
-				$isFirstCharLetter = ctype_alpha($entry_anfangsbuchstabe);
-				$permalink = get_permalink();
+	if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
+		$title = get_the_title();
+
+		if($title):
+			$entry_anfangsbuchstabe = strtoupper(mb_substr($title, 0, 1));
+			$isFirstCharLetter = ctype_alpha($entry_anfangsbuchstabe);
+			$permalink = get_permalink();
 
 			if($isFirstCharLetter == True) {
-	            if (is_null($aktueller_anfangsbuchstabe) || $aktueller_anfangsbuchstabe != $entry_anfangsbuchstabe) {
-	            
-	                $html .= '<a name="'.$entry_anfangsbuchstabe.'"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.$entry_anfangsbuchstabe.'</span> </h3>';	
-	                $aktueller_anfangsbuchstabe = $entry_anfangsbuchstabe;
-	            }	            
+				if (is_null($aktueller_anfangsbuchstabe) || $aktueller_anfangsbuchstabe != $entry_anfangsbuchstabe) {
+
+					$html .= '<a name="'.$entry_anfangsbuchstabe.'"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.$entry_anfangsbuchstabe.'</span> </h3>';
+					$aktueller_anfangsbuchstabe = $entry_anfangsbuchstabe;
+				}
 				$html .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
 			} else {
-				
-	            if (is_null($aktueller_anfangsbuchstabe2) || $aktueller_anfangsbuchstabe2 != $entry_anfangsbuchstabe) {
-	            
-	                $nhtml .= '<h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.$entry_anfangsbuchstabe.'</span> </h3>';	
-	                $aktueller_anfangsbuchstabe2 = $entry_anfangsbuchstabe;
-	            }
-	            
+				$headline = true;
+				/* if (is_null($aktueller_anfangsbuchstabe2) || $aktueller_anfangsbuchstabe2 != $entry_anfangsbuchstabe) {
+                        $headline = true;
+                        //$nhtml .= '<h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.$entry_anfangsbuchstabe.'</span> </h3>';
+                        $aktueller_anfangsbuchstabe2 = $entry_anfangsbuchstabe;
+                    }*/
+
 				$nhtml .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
-				}
-			endif;
-		endwhile;
+			}
 		endif;
-		$html .= $nhtml;
-		$html .= '</div>';
-		return $html;
+	endwhile;
+	endif;
+	if ($headline) {
+		$html .= '<a name="all"></a><h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">#</span> </h3>';
+	}
+	$html .= $nhtml;
+	$html .= '</div>';
+	return $html;
 
-    }
+}
 
-	add_shortcode('gl_directory', 'gl_direct'); //Workarround for older PHP-Versions - Do not use function() instead of gl_direct
-	
-	
-	function gl_nav() {
-		$html = '';
-		$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1'  );
-		$loop = new WP_Query( $args );
-		$array = array();
-		if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
-			$str = get_the_title();
-			$array[] = strtoupper(substr($str, 0, 1));
-		endwhile;
-		endif;
-		
-		$clean_array = array_unique($array);
-		for($i = 65; $i < 91; $i++) {
-			if(in_array(chr($i), $clean_array)) {
-				$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#'.chr($i).'">'.chr($i).'</a></span>';				
-				
-			} else {
-				$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline; color:#d3d3d3;">'.chr($i).'</span>';
-			}		
+add_shortcode('gl_directory', 'gl_direct'); //Workarround for older PHP-Versions - Do not use function() instead of gl_direct
+
+
+function gl_nav() {
+	$html = '';
+	$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1'  );
+	$loop = new WP_Query( $args );
+	$array = array();
+	if ($loop->have_posts()) : while ($loop->have_posts()) : $loop->the_post();
+		$str = get_the_title();
+		$array[] = strtoupper(substr($str, 0, 1));
+	endwhile;
+	endif;
+
+	$clean_array = array_unique($array);
+	for($i = 65; $i < 91; $i++) {
+
+		if(in_array(chr($i), $clean_array)) {
+			$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#'.chr($i).'">'.chr($i).'</a></span>';
+
+		} else {
+			$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline; color:#d3d3d3;">'.chr($i).'</span>';
 		}
-		
+	}
+
+	if(is_numeric($clean_array[0])) {
 		$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#all">#</a></span>';
-		$html .='<div style="clear:left;"></div>';
-		return $html;
-	};
+	}
+	$html .='<div style="clear:left;"></div>';
+	return $html;
+};
 
-	add_shortcode('gl_navigation', 'gl_nav'); //Workarround for older PHP-Versions - Do not use function() instead of gl_nav
-	
+add_shortcode('gl_navigation', 'gl_nav'); //Workarround for older PHP-Versions - Do not use function() instead of gl_nav
 
-	function pippin_filter_content_sample($content) {
+
+function pippin_filter_content_sample($content) {
 	if( is_singular('nessio_gl') && is_main_query() ) {
 		$new_content = get_post_meta( get_the_ID(), '_nessio_gl_term' );
 		if($new_content):
 			$content .= wpautop($new_content[0]);
 		endif;
-	}	
+	}
 	return $content;
 };
 add_filter('the_content', 'pippin_filter_content_sample');
-	
-	
+
+
 $MyGlossar = new MyGlossar;
 
 // Adminmenu
@@ -210,11 +217,11 @@ function build_options_page() { ?>
 		<div class="icon32" id="icon-tools"> <br /> </div>
 		<h2>My Gloassar Settings</h2>
 
-			<form method="post" action="options.php" enctype="multipart/form-data">
+		<form method="post" action="options.php" enctype="multipart/form-data">
 			<?php settings_fields('theme_options'); ?>
 			<?php do_settings_sections(__FILE__); ?>
 			<p class="submit">
-			<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
+				<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
 			</p>
 		</form>
 		<p>After editing the Slug the Permalinks Settings must be saved again.</p>
@@ -239,8 +246,5 @@ function slug_setting() {
 }
 
 
-
-
-
-function theme_options_page() { add_options_page('My Glossar Settings', 'My Glossar Settings', 'administrator', __FILE__, 'build_options_page');}
+function theme_options_page() { add_options_page('Glossar', 'Glossar', 'administrator', __FILE__, 'build_options_page');}
 ?>
