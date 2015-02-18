@@ -6,7 +6,7 @@
    Description: Plugin to create a Glossar / Encyclopedia on Wordpress
    Author: Benjamin Neske
    Author URI: http://www.benjamin-neske.de
-   Version: 1.0.2
+   Version: 1.0.3
 */
 mb_internal_encoding("UTF-8");
 class MyGlossar {
@@ -57,7 +57,9 @@ class MyGlossar {
 				'show_in_menu' => true,
 				'show_ui' => true,
 				'supports' => array( 'title' ),
-				'rewrite' => array( 'slug' => $options['slug_setting'] ? $options['slug_setting'] : 'lexikon', 'with_front' => false )
+				'rewrite' => array( 'slug' => $options['slug_url_setting'] ? get_post($options['slug_url_setting'])->post_name : 'lexikon', 'with_front' => false )
+
+
 			)
 		);
 
@@ -113,9 +115,6 @@ class MyGlossar {
 
 };
 
-
-
-
 function gl_direct() {
 	$html = '<div>';
 	$args = array( 'post_type' => 'nessio_gl',  'orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => '-1');
@@ -141,12 +140,6 @@ function gl_direct() {
 				$html .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
 			} else {
 				$headline = true;
-				/* if (is_null($aktueller_anfangsbuchstabe2) || $aktueller_anfangsbuchstabe2 != $entry_anfangsbuchstabe) {
-                        $headline = true;
-                        //$nhtml .= '<h3 style="border-bottom:1px solid #EBEBEB; clear:both;"><span style="margin:0 0 10px 10px;">'.$entry_anfangsbuchstabe.'</span> </h3>';
-                        $aktueller_anfangsbuchstabe2 = $entry_anfangsbuchstabe;
-                    }*/
-
 				$nhtml .= '<p style="float:left; width:205px;"><a href="'.$permalink.'">'.$title.'</a></p>';
 			}
 		endif;
@@ -186,8 +179,10 @@ function gl_nav() {
 		}
 	}
 
-	if(is_numeric($clean_array[0])) {
+	if(!preg_match("/^[A-Z]$/", $clean_array[0]) OR !preg_match("/^[A-Z]$/", end($clean_array))) {
 		$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline;"><a href="#all">#</a></span>';
+	} else {
+		$html .= '<span style="float:left;font-size:18px; margin-left:10px; display: inline; color:#d3d3d3;">#</span>';
 	}
 	$html .='<div style="clear:left;"></div>';
 	return $html;
@@ -197,7 +192,11 @@ add_shortcode('gl_navigation', 'gl_nav'); //Workarround for older PHP-Versions -
 
 
 function pippin_filter_content_sample($content) {
+
+
+
 	if( is_singular('nessio_gl') && is_main_query() ) {
+
 		$new_content = get_post_meta( get_the_ID(), '_nessio_gl_term' );
 		if($new_content):
 			$content .= wpautop($new_content[0]);
@@ -215,8 +214,6 @@ $MyGlossar = new MyGlossar;
 function build_options_page() { ?>
 	<div id="theme-options-wrap">
 		<div class="icon32" id="icon-tools"> <br /> </div>
-		<h2>My Gloassar Settings</h2>
-
 		<form method="post" action="options.php" enctype="multipart/form-data">
 			<?php settings_fields('theme_options'); ?>
 			<?php do_settings_sections(__FILE__); ?>
@@ -224,7 +221,19 @@ function build_options_page() { ?>
 				<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
 			</p>
 		</form>
-		<p>After editing the Slug the Permalinks Settings must be saved again.</p>
+
+
+		<h2>Support this plugin</h2>
+		<p>If you want to support the development of this plugin, we would appreciate if you consider donating to us.</p>
+		<p><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="hosted_button_id" value="5BZTZ363FZLLA">
+			<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+			<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+		</form>
+		</p>
+		<p><hr></p>
+		<p>* After editing the Slug the Permalinks Settings must be saved again.</p>
 	</div>
 <?php }
 
@@ -233,18 +242,17 @@ function register_and_build_fields() {
 	add_settings_section('general_settings', 'General Settings', 'settings_general', __FILE__);
 
 	function settings_general() {}
-
-	add_settings_field('slug', 'Url-Slug', 'slug_setting', __FILE__, 'general_settings');
+	add_settings_field('slug', 'Mainpage*:', 'slug_url_setting', __FILE__, 'general_settings');
 }
 
 function validate_setting($theme_options) {
 	return $theme_options;
 }
 
-function slug_setting() {
-	$options = get_option('theme_options'); echo "<input name='theme_options[slug_setting]' type='text' value='{$options['slug_setting']}' />";
+function slug_url_setting() {
+	$options = get_option('theme_options');
+	wp_dropdown_pages(array('name' => 'theme_options[slug_url_setting]', 'selected' => $options['slug_url_setting'] ));
 }
-
 
 function theme_options_page() { add_options_page('Glossar', 'Glossar', 'administrator', __FILE__, 'build_options_page');}
 ?>
